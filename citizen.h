@@ -10,10 +10,11 @@ private:
     T health;
     T age;
 public:
+    bool isAlive() { return health > 0; }
     Citizen(T health, T age) : health(health), age(age) { assert(age >= lower && age <= upper); }
     T getHealth() { return health; }
     T getAge() { return age; }
-    void getDamage(T damage) { age = std::max(0, age - damage); }
+    void takeDamage(T damage) { health = std::max(0, health - damage); }
 };
 
 template <typename T>
