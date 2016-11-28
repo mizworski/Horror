@@ -1,8 +1,10 @@
 #include <iostream>
 #include <typeinfo>
+#include "citizen.h"
 
 #ifndef HORROR_MONSTER_H
 #define HORROR_MONSTER_H
+
 
 template <typename T>
 class Monster {
@@ -16,7 +18,7 @@ public:
     Monster(T health, T attackPower) : health(health), attackPower(attackPower) {};
     T getHealth() { return health; }
     T getAttackPower() { return attackPower; }
-    void takeDamage(T damage) {  health = std::max(0, health - damage); }
+    void takeDamage(T damage) {  health = std::max<T>(0, health - damage); }
 };
 
 template <typename T>
@@ -42,11 +44,19 @@ public:
     static const std::string monsterType() { return "Zombie"; }
 };
 
-// TODO case where victim is sheriff, references??
 template <typename M, typename U>
 void attack(M& monster, U& victim) {
     std::cout << victim.getHealth() << std::endl;
     victim.takeDamage(monster.getAttackPower());
 };
+
+/**
+ * Sheriff also have an attack power.
+ */
+template<typename T, typename M> 
+void attack(M& monster, Sheriff<T>& victim) {
+	victim.takeDamage(monster.getAttackPower());
+	monster.takeDamage(victim.getAttackPower());
+}
 
 #endif //HORROR_MONSTER_H

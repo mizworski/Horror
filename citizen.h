@@ -1,5 +1,5 @@
-#include <iostream>
 #include <cassert>
+#include <iostream>
 
 #ifndef HORROR_CITIZEN_H
 #define HORROR_CITIZEN_H
@@ -14,7 +14,7 @@ public:
     Citizen(T health, T age) : health(health), age(age) { assert(age >= lower && age <= upper); }
     T getHealth() { return health; }
     T getAge() { return age; }
-    void takeDamage(T damage) { health = std::max(0, health - damage); }
+    void takeDamage(T damage) { health = std::max<T>(0, health - damage); }
 };
 
 template <typename T>
