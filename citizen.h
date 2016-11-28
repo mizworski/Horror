@@ -1,10 +1,11 @@
 #include <cassert>
 #include <iostream>
+#include <type_traits>
 
 #ifndef HORROR_CITIZEN_H
 #define HORROR_CITIZEN_H
 
-template <typename T, int lower, int upper>
+template <typename T, int lower, int upper, bool isAttacking>
 class Citizen {
 private:
     T health;
@@ -18,24 +19,19 @@ public:
 };
 
 template <typename T>
-class Adult : public Citizen<T, 18, 100> {
-    using Citizen<T, 18, 100>::Citizen;
-
-};
+using Adult = Citizen<T, 18, 100, false>;
 
 template <typename T>
-class Teenager : public Citizen<T, 11, 17> {
-public:
-    using Citizen<T, 11, 17>::Citizen;
-};
+using Teenager = Citizen<T, 11, 17, false>;
 
+// TODO specialization instead of inheritance
 template <typename T>
-class Sheriff : public Citizen<T, 18, 100> {
+class Sheriff : public Citizen<T, 18, 100, true> {
 private:
     T attackPower;
 public:
     T getAttackPower() { return attackPower; }
-    Sheriff(T health, T age, T attackPower) : Citizen<T, 18, 100>::Citizen(health, age), attackPower(attackPower) {};
+    Sheriff(T health, T age, T attackPower) : Citizen<T, 18, 100, true>::Citizen(health, age), attackPower(attackPower) {};
 };
 
 
