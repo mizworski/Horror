@@ -5,45 +5,50 @@
 #ifndef HORROR_MONSTER_H
 #define HORROR_MONSTER_H
 
+enum MonsterType { vampire, mummy, zombie};
 
-template <typename T>
+template <typename T, MonsterType type>
 class Monster {
 private:
     T health;
     T attackPower;
 public:
-    bool isAlive() { return health > 0; }
-    // TODO valueType in some other way???
-    static const char* valueType() { return typeid(T).name(); }
     Monster(T health, T attackPower) : health(health), attackPower(attackPower) {};
     T getHealth() { return health; }
     T getAttackPower() { return attackPower; }
+    // TODO types casting??
     void takeDamage(T damage) {  health = std::max<T>(0, health - damage); }
+
+    bool isAlive() { return health > 0; }
+
+    // TODO valueType in some other way???
+    static const char* valueType() { return typeid(T).name(); }
+
+    static const std::string monsterType() {
+        switch(type) {
+            case vampire:
+                return "Vampire";
+            case mummy:
+                return "Mummy";
+            case zombie:
+                return "Zombie";
+        }
+    }
+
 };
 
 template <typename T>
-class Vampire : public Monster<T> {
-    using Monster<T>::Monster;
-public:
-    // TODO template parameter?
-    static const std::string monsterType() { return "Vampire"; }
-};
+using Vampire = Monster<T, vampire>;
 
 template <typename T>
-class Mummy : public Monster<T> {
-    using Monster<T>::Monster;
-public:
-    static const std::string monsterType() { return "Mummy"; }
-
-};
+using Mummy = Monster<T, mummy>;
 
 template <typename T>
-class Zombie : public Monster<T> {
-    using Monster<T>::Monster;
-public:
-    static const std::string monsterType() { return "Zombie"; }
-};
+using Zombie = Monster<T, zombie>;
 
+/**
+ * Perform attack of monster on the citizen.
+ */
 template <typename M, typename U>
 void attack(M& monster, U& victim) {
     std::cout << victim.getHealth() << std::endl;
@@ -51,7 +56,8 @@ void attack(M& monster, U& victim) {
 };
 
 /**
- * Sheriff also have an attack power.
+ * Specialization for a victim being a sheriff, as
+ * sheriff also have an attack power.
  */
 template<typename T, typename M> 
 void attack(M& monster, Sheriff<T>& victim) {

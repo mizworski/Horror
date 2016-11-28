@@ -10,12 +10,31 @@ class Citizen {
 private:
     T health;
     T age;
+    T attackPower;
 public:
-    bool isAlive() { return health > 0; }
+    /**
+     * Constructor for not attacking citizen (adult, teenager)
+     */
+    template <typename Q = T, typename = typename std::enable_if_t<!isAttacking, Q> >
     Citizen(T health, T age) : health(health), age(age) { assert(age >= lower && age <= upper); }
+
+    /**
+     * Constructor for sheriff.
+     */
+    template <typename Q = T, typename = typename std::enable_if_t<isAttacking, Q> >
+    Citizen(T health, T age, T attackPower) : health(health), age(age), attackPower(attackPower) { assert(age >= lower && age <= upper); };
+
     T getHealth() { return health; }
     T getAge() { return age; }
     void takeDamage(T damage) { health = std::max<T>(0, health - damage); }
+
+    bool isAlive() { return health > 0; }
+
+    /**
+     * Return attack power (enabled only for sheriff).
+     */
+    template <typename Q = T, typename = typename std::enable_if_t<isAttacking, Q> >
+    T getAttackPower()  { return attackPower; }
 };
 
 template <typename T>
@@ -24,15 +43,8 @@ using Adult = Citizen<T, 18, 100, false>;
 template <typename T>
 using Teenager = Citizen<T, 11, 17, false>;
 
-// TODO specialization instead of inheritance
 template <typename T>
-class Sheriff : public Citizen<T, 18, 100, true> {
-private:
-    T attackPower;
-public:
-    T getAttackPower() { return attackPower; }
-    Sheriff(T health, T age, T attackPower) : Citizen<T, 18, 100, true>::Citizen(health, age), attackPower(attackPower) {};
-};
+using Sheriff = Citizen<T, 18, 100, true>;
 
 
 #endif //HORROR_CITIZEN_H
