@@ -17,9 +17,9 @@ int main() {
     smallTown.tick(22);
 
     auto status = smallTown.getStatus();
-//    assert(get<0>(status) != "");
-//    assert(get<1>(status) == 60);
-//    assert(get<2>(status) == 3);
+    assert(get<0>(status) != "");
+    assert(get<1>(status) == 60);
+    assert(get<2>(status) == 3);
 
     return 0;
 }
