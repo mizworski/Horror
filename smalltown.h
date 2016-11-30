@@ -10,6 +10,32 @@
 #include "monster.h"
 #include "citizen.h"
 
+template<typename U>
+constexpr int log2(U n) {
+    return n < 2 ? 1 : 1 + log2(n / 2);
+}
+
+template<typename U>
+constexpr int fibosInRange(U upperBound) {
+    return 2 * log2(upperBound) + 2;
+}
+
+template<typename T, T N>
+struct Fibonacci {
+    constexpr Fibonacci() : fibs() {
+        fibs[0] = 0;
+        fibs[1] = 1;
+        for (auto i = 2; i < N; ++i) {
+            fibs[i] = fibs[i - 1] + fibs[i - 2];
+        }
+    }
+
+    T fibs[N];
+};
+
+constexpr size_t fun(int bound) {
+    return 10;
+}
 
 template<typename M, typename U, U t0, U t1, typename... C>
 class SmallTown {
@@ -20,25 +46,9 @@ private:
     std::tuple<C...> citizens_;
     size_t aliveCitizensAmount_ = 0;
 
-    constexpr static size_t fibsInRange(int n) {
-        return (size_t) (10 + std::ceil(std::log(n * std::sqrt(5) / 2) / std::log((1 + std::sqrt(5)) / 2)));
-    }
-
-    constexpr static auto generateFibs(size_t bound) {
-        std::array<U, fibsInRange(t1)> fibs;
-        fibs[0] = 0;
-        fibs[1] = 1;
-
-        for (int i = 2; i < bound; ++i) {
-            fibs[i] = fibs[i - 1] + fibs[i - 2];
-        }
-
-        return fibs;
-    }
-
-    static const std::array<U, fibsInRange(t1)> &fibs() {
-        static std::array<U, fibsInRange(t1)> compileTimeFibs(generateFibs(fibsInRange(t1)));
-        return compileTimeFibs;
+    static constexpr auto fibonacci() {
+        constexpr auto fibonacci = Fibonacci<U, fibosInRange(t1)>();
+        return fibonacci;
     };
 
     void attackAll() {
@@ -62,9 +72,9 @@ public:
         } else if (aliveCitizensAmount_ == 0) {
             std::cout << "MONSTER WON\n";
         } else {
-            //if (std::binary_search(fibs().begin(), fibs().end(), actTime_)) {
-            //    attackAll();
-            //}
+//            if (std::binary_search(fibs().begin(), fibs().end(), actTime_)) {
+//                attackAll();
+//            }
         }
 
         actTime_ += timeStep;
