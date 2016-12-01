@@ -4,6 +4,11 @@
 #include <cassert>
 #include <iostream>
 
+const int ADULT_MIN_AGE = 18;
+const int ADULT_MAX_AGE = 100;
+const int TEEN_MIN_AGE = 11;
+const int TEEN_MAX_AGE = 17;
+
 template <typename T, int lower, int upper, bool isAttacking>
 class Citizen {
 private:
@@ -37,13 +42,13 @@ public:
 };
 
 template <typename T>
-using Adult = Citizen<T, 18, 100, false>;
+using Adult = Citizen<T, ADULT_MIN_AGE, ADULT_MAX_AGE, false>;
 
 template <typename T>
-using Teenager = Citizen<T, 11, 17, false>;
+using Teenager = Citizen<T, TEEN_MIN_AGE, TEEN_MAX_AGE, false>;
 
 template <typename T>
-using Sheriff = Citizen<T, 18, 100, true>;
+using Sheriff = Citizen<T, ADULT_MIN_AGE, ADULT_MAX_AGE, true>;
 
 
 #endif //HORROR_CITIZEN_H
