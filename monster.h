@@ -16,12 +16,10 @@ public:
     Monster(T health, T attackPower) : health(health), attackPower(attackPower) {};
     T getHealth() { return health; }
     T getAttackPower() { return attackPower; }
-    // TODO types casting??
     void takeDamage(T damage) {  health = std::max<T>(0, health - damage); }
 
     bool isAlive() { return health > 0; }
 
-    // TODO valueType in some other way???
     static const char* valueType() { return typeid(T).name(); }
 
     static const std::string monsterType() {
@@ -51,7 +49,6 @@ using Zombie = Monster<T, zombie>;
  */
 template <typename M, typename U>
 void attack(M& monster, U& victim) {
-    std::cout << victim.getHealth() << std::endl;
     victim.takeDamage(monster.getAttackPower());
 };
 

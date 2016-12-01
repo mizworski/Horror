@@ -12,7 +12,7 @@
 
 template<typename U>
 constexpr int log2(U n) {
-    return n < 2 ? 1 : 1 + log2(n / 2);
+    return n < 2 ? 1 : 1 + int(log2(n / 2));
 }
 
 template<typename U>
@@ -82,7 +82,7 @@ private:
     }
 
 public:
-    SmallTown(M monster, C... citizens) : monster_{monster}, citizens_{citizens...}, actTime_{t0}, endTime_{t1} {
+    SmallTown(M monster, C... citizens) : monster_{monster}, actTime_{t0}, endTime_{t1}, citizens_{citizens...} {
         aliveCitizensAmount_ = std::tuple_size<decltype(citizens_)>::value;
     }
 
