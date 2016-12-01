@@ -1,7 +1,7 @@
 #include <cassert>
-#include "citizen.h"
-#include "monster.h"
-#include "smalltown.h"
+#include "../citizen.h"
+#include "../monster.h"
+#include "../smalltown.h"
 
 using namespace std;
 
