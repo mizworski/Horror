@@ -20,17 +20,17 @@ constexpr int fibosInRange(U upperBound) {
     return 2 * log2(upperBound) + 2;
 }
 
-template<typename T, T N>
+template<typename T, T fibsLowerThanEndLowerBound>
 struct Fibonacci {
     constexpr Fibonacci() : fibs() {
-        fibs[0] = 0;
-        fibs[1] = 1;
-        for (auto i = 2; i < N; ++i) {
+        fibs[0] = 1;
+        fibs[1] = 2;
+        for (auto i = 2; i < fibsLowerThanEndLowerBound; ++i) {
             fibs[i] = fibs[i - 1] + fibs[i - 2];
         }
     }
 
-    T fibs[N];
+    T fibs[fibsLowerThanEndLowerBound];
 };
 
 template<class F, class... Ts, std::size_t... Is>
@@ -46,6 +46,9 @@ void for_each(const std::tuple<Ts...> &tuple, F func) {
 
 template<typename M, typename U, U t0, U t1, typename... C>
 class SmallTown {
+    static_assert(std::is_integral<U>::value, "The time type must be integral.");
+    static_assert(t0 >= 0, "Start time must be non-negative.");
+    static_assert(t0 <= t1, "Start time must precede end time.");
 private:
     M monster_;
     U actTime_;
@@ -58,8 +61,6 @@ private:
         return fibonacci;
     };
 
-    std::vector<U> fibs;
-
     void attackAll() {
         for_each(citizens_, [=](auto citizen) { //todo taking copy of each citizen, every time hp resets to full
             if (citizen.getHealth() > 0) {
@@ -71,13 +72,18 @@ private:
         });
     }
 
+    bool isFibonacci(int actTime) {
+        for (int i = 0; i < fibosInRange(t1); ++i) {
+            if (fibonacci().fibs[i] == actTime) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 public:
     SmallTown(M monster, C... citizens) : monster_{monster}, citizens_{citizens...}, actTime_{t0}, endTime_{t1} {
         aliveCitizensAmount_ = std::tuple_size<decltype(citizens_)>::value;
-        fibs.reserve(fibosInRange(t1));
-        for (auto el : fibonacci().fibs) {
-            fibs.push_back(el);
-        }
     }
 
     auto getStatus() {
@@ -91,7 +97,7 @@ public:
             std::cout << "CITIZENS WON" << std::endl;
         } else if (aliveCitizensAmount_ == 0) {
             std::cout << "MONSTER WON" << std::endl;
-        } else if (std::binary_search(fibs.begin(), fibs.end(), actTime_)) {
+        } else if (isFibonacci(actTime_)) {
             attackAll();
         }
 
