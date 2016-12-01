@@ -1,8 +1,8 @@
-#include <cassert>
-#include <type_traits>
-
 #ifndef HORROR_CITIZEN_H
 #define HORROR_CITIZEN_H
+
+#include <cassert>
+#include <iostream>
 
 template <typename T, int lower, int upper, bool isAttacking>
 class Citizen {

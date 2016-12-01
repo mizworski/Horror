@@ -1,9 +1,8 @@
-#include <iostream>
-#include <typeinfo>
-#include "citizen.h"
-
 #ifndef HORROR_MONSTER_H
 #define HORROR_MONSTER_H
+
+#include <iostream>
+#include "citizen.h"
 
 enum MonsterType { vampire, mummy, zombie};
 
