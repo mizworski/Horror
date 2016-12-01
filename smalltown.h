@@ -14,8 +14,8 @@
  * Calculates ceiling of logarithm of given number.
  */
 template<typename U>
-constexpr size_t log2(U n) {
-    return n < 2 ? 1 : 1 + log2(n / 2);
+constexpr size_t logg2(U n) {
+    return n < 2 ? 1 : 1 + logg2(U(n / 2));
 }
 
 /**
@@ -25,7 +25,7 @@ constexpr size_t log2(U n) {
  */
 template<typename U>
 constexpr size_t fibosInRange(U upperBound) {
-    return 2 * log2(upperBound) + 2;
+    return 2 * logg2(upperBound) + 2;
 }
 
 /**
