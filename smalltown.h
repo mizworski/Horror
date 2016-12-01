@@ -11,12 +11,12 @@
 #include "citizen.h"
 
 template<typename U>
-constexpr int log2(U n) {
-    return n < 2 ? 1 : 1 + int(log2(n / 2));
+constexpr size_t log2(U n) {
+    return n < 2 ? 1 : 1 + log2(n / 2);
 }
 
 template<typename U>
-constexpr int fibosInRange(U upperBound) {
+constexpr size_t fibosInRange(U upperBound) {
     return 2 * log2(upperBound) + 2;
 }
 
@@ -27,22 +27,17 @@ struct Fibonacci {
         fibs[1] = 2;
         for (auto i = 2; i < fibsLowerThanEndLowerBound; ++i) {
             fibs[i] = fibs[i - 1] + fibs[i - 2];
+            if (fibs[i] < fibs[i-1]) {
+                for (int k = i; k < fibsLowerThanEndLowerBound; ++k) {
+                    fibs[k] = fibs[i-1];
+                }
+                break;
+            }
         }
     }
 
     T fibs[fibsLowerThanEndLowerBound];
 };
-
-template<class F, class... Ts, std::size_t... Is>
-void for_each(const std::tuple<Ts...> &tuple, F func, std::index_sequence<Is...>) {
-    using expander = int[];
-    (void) expander {0, ((void) func(std::get<Is>(tuple)), 0)...};
-}
-
-template<class F, class...Ts>
-void for_each(const std::tuple<Ts...> &tuple, F func) {
-    for_each(tuple, func, std::make_index_sequence<sizeof...(Ts)>());
-}
 
 template<typename M, typename U, U t0, U t1, typename... C>
 class SmallTown {
@@ -61,16 +56,22 @@ private:
         return fibonacci;
     };
 
+    template<int i, typename H, typename... Args>
     void attackAll() {
-        for_each(citizens_, [=](auto citizen) { //todo taking copy of each citizen, every time hp resets to full
-            if (citizen.getHealth() > 0) {
-                attack(monster_, citizen);
-                if (citizen.getHealth() <= 0) {
-                    --aliveCitizensAmount_;
-                }
+        if (std::get<i>(citizens_).isAlive()) {
+            attack(monster_, std::get<i>(citizens_));
+
+            if (!std::get<i>(citizens_).isAlive()) {
+                --aliveCitizensAmount_;
             }
-        });
+        }
+
+        attackAll<i + 1, Args...>();
     }
+
+    template<int i>
+    void attackAll() {
+    };
 
     bool isFibonacci(int actTime) {
         for (int i = 0; i < fibosInRange(t1); ++i) {
@@ -98,7 +99,7 @@ public:
         } else if (aliveCitizensAmount_ == 0) {
             std::cout << "MONSTER WON" << std::endl;
         } else if (isFibonacci(actTime_)) {
-            attackAll();
+            attackAll<0, C...>();
         }
 
         actTime_ += timeStep;
