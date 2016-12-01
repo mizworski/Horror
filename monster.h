@@ -10,17 +10,17 @@ enum MonsterType { vampire, mummy, zombie};
 template <typename T, MonsterType type>
 class Monster {
 private:
-    T health;
-    T attackPower;
+    T health_;
+    T attackPower_;
 public:
-    Monster(T health, T attackPower) : health(health), attackPower(attackPower) {};
-    T getHealth() { return health; }
-    T getAttackPower() { return attackPower; }
-    void takeDamage(T damage) {  health = std::max<T>(0, health - damage); }
+    Monster(T health, T attackPower) : health_(health), attackPower_(attackPower) {};
+    T getHealth() { return health_; }
+    T getAttackPower() { return attackPower_; }
+    void takeDamage(T damage) {  health_ = health_ >= damage ? health_ - damage : 0; }
 
-    bool isAlive() { return health > 0; }
+    bool isAlive() { return health_ > 0; }
 
-    static const char* valueType() { return typeid(T).name(); }
+    using valueType = T;
 
     static const std::string monsterType() {
         switch(type) {

@@ -1,5 +1,4 @@
 #include <cassert>
-#include <iostream>
 #include <type_traits>
 
 #ifndef HORROR_CITIZEN_H
@@ -8,33 +7,33 @@
 template <typename T, int lower, int upper, bool isAttacking>
 class Citizen {
 private:
-    T health;
-    T age;
-    T attackPower;
+    T health_;
+    T age_;
+    T attackPower_;
 public:
     /**
      * Constructor for not attacking citizen (adult, teenager)
      */
     template <typename Q = T, typename = typename std::enable_if_t<!isAttacking, Q> >
-    Citizen(T health, T age) : health(health), age(age) { assert(age >= lower && age <= upper); }
+    Citizen(T health, T age) : health_(health), age_(age) { assert(age >= lower && age <= upper); }
 
     /**
      * Constructor for sheriff.
      */
     template <typename Q = T, typename = typename std::enable_if_t<isAttacking, Q> >
-    Citizen(T health, T age, T attackPower) : health(health), age(age), attackPower(attackPower) { assert(age >= lower && age <= upper); };
+    Citizen(T health, T age, T attackPower) : health_(health), age_(age), attackPower_(attackPower) { assert(age >= lower && age <= upper); };
 
-    T getHealth() { return health; }
-    T getAge() { return age; }
-    void takeDamage(T damage) { health = std::max<T>(0, health - damage); }
+    T getHealth() { return health_; }
+    T getAge() { return age_; }
+    void takeDamage(T damage) {  health_ = health_ >= damage ? health_ - damage : 0; }
 
-    bool isAlive() { return health > 0; }
+    bool isAlive() { return health_ > 0; }
 
     /**
      * Return attack power (enabled only for sheriff).
      */
     template <typename Q = T, typename = typename std::enable_if_t<isAttacking, Q> >
-    T getAttackPower()  { return attackPower; }
+    T getAttackPower()  { return attackPower_; }
 };
 
 template <typename T>
