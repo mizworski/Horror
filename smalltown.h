@@ -10,16 +10,27 @@
 #include "monster.h"
 #include "citizen.h"
 
+/**
+ * Calculates ceiling of logarithm of given number.
+ */
 template<typename U>
 constexpr size_t log2(U n) {
     return n < 2 ? 1 : 1 + log2(n / 2);
 }
 
+/**
+ * Calculates upper bound of amount of fibonacci numbers lower than a given number.
+ * Returned value is O(log n) where n is a given number, which is asymptotically equal to
+ * amount of fibonacci numbers lower than given number.
+ */
 template<typename U>
 constexpr size_t fibosInRange(U upperBound) {
     return 2 * log2(upperBound) + 2;
 }
 
+/**
+ * Structure with fibonacci numbers, created at compile time.
+ */
 template<typename T, T fibsLowerThanEndLowerBound>
 struct Fibonacci {
     constexpr Fibonacci() : fibs() {
@@ -27,6 +38,10 @@ struct Fibonacci {
         fibs[1] = 2;
         for (auto i = 2; i < fibsLowerThanEndLowerBound; ++i) {
             fibs[i] = fibs[i - 1] + fibs[i - 2];
+
+            /// If we started overflowing our type T,
+            /// we set rest of elements in array as biggest fibonacci
+            /// that our type T can hold.
             if (fibs[i] < fibs[i-1]) {
                 for (int k = i; k < fibsLowerThanEndLowerBound; ++k) {
                     fibs[k] = fibs[i-1];
@@ -58,9 +73,12 @@ private:
 
     template<int i, typename H, typename... Args>
     void attackAll() {
+        /// Citizen can be attacked only if he is alive.
         if (std::get<i>(citizens_).isAlive()) {
             attack(monster_, std::get<i>(citizens_));
 
+            /// Amount of citizens that are alive has to be decreased only if
+            /// citizen that was alive changed his state.
             if (!std::get<i>(citizens_).isAlive()) {
                 --aliveCitizensAmount_;
             }
@@ -73,6 +91,7 @@ private:
     void attackAll() {
     };
 
+    /// Checks if given number is a fibonacci number.
     bool isFibonacci(int actTime) {
         for (int i = 0; i < fibosInRange(t1); ++i) {
             if (fibonacci().fibs[i] == actTime) {
